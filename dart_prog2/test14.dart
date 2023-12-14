@@ -1,9 +1,8 @@
 // Named Constructors Parameters
 class Player {
   final String name;
-  int xp;
+  int xp, age;
   String team;
-  int age;
 
   // 함수 정의
   void sayHi () {
@@ -11,6 +10,7 @@ class Player {
   }
 
   // 생성자 정의
+  // Named parameter를 이용한 생성자
   Player({ 
     required this.name, 
     required this.xp,
@@ -18,13 +18,30 @@ class Player {
     required this.age
   });
 
+  // Named Constructor 정의
+  Player.createBluePlayer({required String name, required int age, }) : 
+  // 초기화
+  this.age = age, 
+  this.name = name, 
+  this.team = 'blue',
+  this.xp = 0;
+
+  Player.createRedPlayer(String name, int age) :
+  this.name = name,
+  this.age = age,
+  this.team = 'red',
+  this.xp = 0;
 }
 
 void main() {
-  // Named Constructor를 통한 인스턴스 생성
+  // Constructor를 통한 인스턴스 생성
   var player = Player(name: 'bibi', xp: 1000, team: 'blue', age: 10);
   player.sayHi();
 
-  var player2 = Player(name: 'gongji', xp: 1200, team: 'red', age: 24);
+  // Named Constructor를 통한 인스턴스 생성
+  var player2 = Player.createBluePlayer(name: 'gongji', age: 12);
   player2.sayHi();
+
+  var player3 = Player.createRedPlayer('juju', 7);
+  player3.sayHi();
 }
