@@ -1,8 +1,12 @@
+// Enum
+enum Team { red, blue }
+
+
 // Named Constructors Parameters
 class Player {
   final String name;
   int xp, age;
-  String team;
+  Team team; // enum type
 
   // 함수 정의
   void sayHi () {
@@ -23,26 +27,26 @@ class Player {
   // 초기화
   this.age = age, 
   this.name = name, 
-  this.team = 'blue',
+  this.team = Team.blue,
   this.xp = 0;
 
   Player.createRedPlayer(String name, int age) :
   this.name = name,
   this.age = age,
-  this.team = 'red',
+  this.team = Team.red,
   this.xp = 0;
 }
 
 void main() {
   // Constructor를 통한 인스턴스 생성
-  var player = Player(name: 'bibi', xp: 1000, team: 'blue', age: 10);
+  var player = Player(name: 'bibi', xp: 1000, team: Team.blue, age: 10);
   player.sayHi();
 
   // cascade operator
-  var newPlayer = Player(name: 'rolrol', xp: 1000, team: 'blue', age: 11)
+  var newPlayer = Player(name: 'rolrol', xp: 1000, team: Team.blue, age: 11)
   // ..을 사용하면 변수에 바로 접근이 가능하다.
   ..age = 12
-  ..team = 'yellow'
+  ..team = Team.red
   ..xp = 2000
   ..sayHi();
 
