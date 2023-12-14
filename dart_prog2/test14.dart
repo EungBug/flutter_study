@@ -38,6 +38,14 @@ void main() {
   var player = Player(name: 'bibi', xp: 1000, team: 'blue', age: 10);
   player.sayHi();
 
+  // cascade operator
+  var newPlayer = Player(name: 'rolrol', xp: 1000, team: 'blue', age: 11)
+  // ..을 사용하면 변수에 바로 접근이 가능하다.
+  ..age = 12
+  ..team = 'yellow'
+  ..xp = 2000
+  ..sayHi();
+
   // Named Constructor를 통한 인스턴스 생성
   var player2 = Player.createBluePlayer(name: 'gongji', age: 12);
   player2.sayHi();
