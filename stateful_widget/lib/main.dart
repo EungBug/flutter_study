@@ -39,10 +39,29 @@ class _AppState extends State<App> {
   }
 }
 
-class MyLargeTitle extends StatelessWidget {
+class MyLargeTitle extends StatefulWidget {
   const MyLargeTitle({
     super.key,
   });
+
+  @override
+  State<MyLargeTitle> createState() => _MyLargeTitleState();
+}
+
+class _MyLargeTitleState extends State<MyLargeTitle> {
+  int count = 0;
+
+  @override
+  void initState() {
+    // 단한번만 호출
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    // 위젯이 화면에서 사라질때 호출
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
