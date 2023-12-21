@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -8,11 +10,69 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  static List<int> times = [15, 20, 25, 30, 35, 40, 45, 50, 55, 60];
+  static List<int> times = [15, 20, 25, 30, 35, 40, 45, 50, 55];
   int selectedTime = 25;
   bool isRunning = false;
   int roundCount = 0;
   int goalCount = 0;
+  late int totalSeconds = selectedTime * 60;
+
+  late Timer timer;
+
+  void onChangeTime(int time) {
+    if (isRunning) {
+      timer.cancel();
+    }
+    setState(() {
+      isRunning = false;
+      selectedTime = time;
+      totalSeconds = time == 15 ? 3 : time * 60;
+    });
+  }
+
+  void onTick(Timer timer) {
+    if (totalSeconds == 0) {
+      setState(() {
+        roundCount += 1;
+        if (roundCount == 4) {
+          roundCount = 0;
+          goalCount += 1;
+        }
+        if (goalCount == 12) {
+          goalCount = 0;
+        }
+
+        totalSeconds = selectedTime == 15 ? 3 : selectedTime * 60;
+        isRunning = false;
+        timer.cancel();
+      });
+    } else {
+      setState(() {
+        totalSeconds -= 1;
+      });
+    }
+  }
+
+  void onStartPressed() {
+    timer = Timer.periodic(const Duration(seconds: 1), onTick);
+    setState(() {
+      isRunning = true;
+    });
+  }
+
+  void onStopPressed() {
+    timer.cancel();
+    setState(() {
+      isRunning = false;
+    });
+  }
+
+  String format(int seconds, bool isMinute) {
+    var duration = Duration(seconds: seconds);
+    var min = duration.toString().split('.').first.substring(2, 4);
+    var sec = duration.toString().split('.').first.substring(5, 7);
+    return isMinute ? min : sec;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,23 +105,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 flex: 3,
                 fit: FlexFit.tight,
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Expanded(
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(vertical: 25),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Text(
-                          '12',
-                          style: TextStyle(
-                            color: Theme.of(context).primaryColor,
-                            fontSize: 100,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
+                    TimeText(
+                      time: format(totalSeconds, true),
                     ),
                     const Text(
                       ' : ',
@@ -70,22 +118,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         fontSize: 50,
                       ),
                     ),
-                    Expanded(
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(vertical: 25),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Text(
-                          '12',
-                          style: TextStyle(
-                            color: Theme.of(context).primaryColor,
-                            fontSize: 100,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
+                    TimeText(
+                      time: format(totalSeconds, false),
                     ),
                   ],
                 ),
@@ -100,6 +134,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         TimeBox(
                           time: '$time',
                           isSelected: time == selectedTime,
+                          onChangeTime: () => onChangeTime(time),
                         )
                     ],
                   ),
@@ -117,7 +152,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     color: Colors.white,
                   ),
                   iconSize: 100,
-                  onPressed: () {},
+                  onPressed: isRunning ? onStopPressed : onStartPressed,
                 )),
               ),
               Flexible(
@@ -146,35 +181,69 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
+class TimeText extends StatelessWidget {
+  final String time;
+  const TimeText({
+    super.key,
+    required this.time,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 40),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Text(
+          time,
+          style: TextStyle(
+            color: Theme.of(context).primaryColor,
+            fontSize: 80,
+          ),
+          textAlign: TextAlign.center,
+        ),
+      ),
+    );
+  }
+}
+
 class TimeBox extends StatelessWidget {
   final String time;
   final bool isSelected;
+  final Function onChangeTime;
 
   const TimeBox({
     super.key,
     required this.time,
     required this.isSelected,
+    required this.onChangeTime,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      margin: const EdgeInsets.only(right: 10),
-      width: 70,
-      decoration: BoxDecoration(
-          border: Border.all(
-            color: Colors.white,
-            width: 1,
+    return Padding(
+      padding: const EdgeInsets.only(right: 10),
+      child: TextButton(
+        style: TextButton.styleFrom(
+            backgroundColor: isSelected ? Colors.white : Colors.transparent,
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+            side: const BorderSide(
+              color: Colors.white,
+              width: 1,
+            ),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))),
+        onPressed: () => onChangeTime(),
+        child: Text(
+          time,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: isSelected ? Theme.of(context).primaryColor : Colors.white,
+            fontSize: 22,
           ),
-          color: isSelected ? Colors.white : Colors.transparent,
-          borderRadius: BorderRadius.circular(8)),
-      child: Text(
-        time,
-        textAlign: TextAlign.center,
-        style: TextStyle(
-          color: isSelected ? Theme.of(context).primaryColor : Colors.white,
-          fontSize: 22,
         ),
       ),
     );
