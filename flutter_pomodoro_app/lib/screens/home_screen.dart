@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -8,6 +10,47 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  static const twentyFiveMinutes = 1500;
+  int totalSeconds = twentyFiveMinutes;
+  late Timer timer;
+  bool isRunning = false;
+  int totalPomodoros = 0;
+
+  void onTick(Timer timer) {
+    if (totalSeconds == 0) {
+      setState(() {
+        totalPomodoros += 1;
+        isRunning = false;
+        totalSeconds = twentyFiveMinutes;
+      });
+      timer.cancel();
+    } else {
+      setState(() {
+        totalSeconds -= 1;
+      });
+    }
+  }
+
+  void onStartPressed() {
+    timer = Timer.periodic(const Duration(seconds: 1), onTick);
+    setState(() {
+      isRunning = true;
+    });
+  }
+
+  void onPausePressed() {
+    timer.cancel();
+    setState(() {
+      isRunning = false;
+    });
+  }
+
+  String format(int seconds) {
+    var duration = Duration(seconds: seconds);
+
+    return duration.toString().split('.').first.substring(2, 7);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,7 +62,7 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Container(
                 alignment: Alignment.bottomCenter,
                 child: Text(
-                  '25:00',
+                  format(totalSeconds),
                   style: TextStyle(
                     color: Theme.of(context).cardColor,
                     fontWeight: FontWeight.w600,
@@ -31,9 +74,11 @@ class _HomeScreenState extends State<HomeScreen> {
             flex: 3,
             child: Center(
               child: IconButton(
-                icon: const Icon(Icons.play_circle),
+                icon: Icon(isRunning
+                    ? Icons.pause_circle_outline
+                    : Icons.play_circle_outline),
                 iconSize: 120,
-                onPressed: () {},
+                onPressed: isRunning ? onPausePressed : onStartPressed,
                 color: Theme.of(context).cardColor,
               ),
             ),
@@ -45,6 +90,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 Expanded(
                   child: Container(
                     decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(50),
                       color: Theme.of(context).cardColor,
                     ),
                     child: Column(
@@ -60,7 +106,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ),
                         Text(
-                          '0',
+                          '$totalPomodoros',
                           style: TextStyle(
                             fontSize: 68,
                             color:
