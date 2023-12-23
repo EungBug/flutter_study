@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_webtoon_app/models/webtoon.dart';
 import 'package:flutter_webtoon_app/service/api_service.dart';
+import 'package:flutter_webtoon_app/widgets/webtoon_widget.dart';
 
 class HomeScreen extends StatelessWidget {
   HomeScreen({super.key});
@@ -26,18 +27,16 @@ class HomeScreen extends StatelessWidget {
         future: webtoons,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            return ListView.separated(
-                scrollDirection: Axis.horizontal,
-                itemCount: snapshot.data!.length,
-                itemBuilder: (context, index) {
-                  var webtoon = snapshot.data![index];
-                  return Text(webtoon.title);
-                },
-                separatorBuilder: (context, index) {
-                  return const SizedBox(
-                    width: 20,
-                  );
-                });
+            return Column(
+              children: [
+                const SizedBox(
+                  height: 50,
+                ),
+                Expanded(
+                  child: makeList(snapshot),
+                ),
+              ],
+            );
           }
           return const Center(
             child: CircularProgressIndicator(),
@@ -45,5 +44,25 @@ class HomeScreen extends StatelessWidget {
         },
       ),
     );
+  }
+
+  ListView makeList(AsyncSnapshot<List<WebtoonModel>> snapshot) {
+    return ListView.separated(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        scrollDirection: Axis.horizontal,
+        itemCount: snapshot.data!.length,
+        itemBuilder: (context, index) {
+          var webtoon = snapshot.data![index];
+          return Webtoon(
+            id: webtoon.id,
+            title: webtoon.title,
+            thumb: webtoon.thumb,
+          );
+        },
+        separatorBuilder: (context, index) {
+          return const SizedBox(
+            width: 40,
+          );
+        });
   }
 }
