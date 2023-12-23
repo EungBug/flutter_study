@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-class PopularMovie extends StatelessWidget {
+class NowPlayingMovie extends StatelessWidget {
   final int id;
   final String poster;
   final String title;
 
-  const PopularMovie(
+  const NowPlayingMovie(
       {super.key, required this.id, required this.poster, required this.title});
 
   static const imageUrl = 'https://image.tmdb.org/t/p/w500/';
@@ -13,8 +13,9 @@ class PopularMovie extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 250,
+      width: 150,
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
             clipBehavior: Clip.hardEdge,
@@ -28,10 +29,23 @@ class PopularMovie extends StatelessWidget {
                     "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36",
               },
               fit: BoxFit.cover,
-              width: 250,
-              height: 180,
+              width: 150,
+              height: 150,
             ),
           ),
+          const SizedBox(
+            height: 8,
+          ),
+          Flexible(
+            child: Text(
+              title,
+              style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 14,
+                  overflow: TextOverflow.ellipsis),
+              maxLines: 2,
+            ),
+          )
         ],
       ),
     );

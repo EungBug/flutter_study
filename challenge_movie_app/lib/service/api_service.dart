@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:challenge_movie_app/models/movie_model.dart';
-import 'package:challenge_movie_app/models/popular_movie_model.dart';
 import 'package:http/http.dart' as http;
 
 class ApiService {
@@ -13,8 +12,22 @@ class ApiService {
 
     if (res.statusCode == 200) {
       final body = jsonDecode(res.body);
-      final popularMovie = PopularMovieModel.fromJson(body);
-      return popularMovie.results;
+      return (body["results"] as List)
+          .map((movie) => MovieModel.fromJson(movie))
+          .toList();
+    }
+    throw Error();
+  }
+
+  static Future<List<MovieModel>> getNowPlayingMovies() async {
+    final url = Uri.parse('$baseUrl/now-playing');
+    final res = await http.get(url);
+
+    if (res.statusCode == 200) {
+      final body = jsonDecode(res.body);
+      return (body["results"] as List)
+          .map((movie) => MovieModel.fromJson(movie))
+          .toList();
     }
     throw Error();
   }
