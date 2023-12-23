@@ -15,6 +15,7 @@ class NowPlayingMovie extends StatelessWidget {
     return SizedBox(
       width: 150,
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(

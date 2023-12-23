@@ -24,7 +24,7 @@ class MovieModel {
         release_date = json['release_date'],
         title = json['title'],
         video = json['video'],
-        vote_average = json['vote_average'],
+        vote_average = double.parse(json['vote_average'].toString()),
         vote_count = json['vote_count'];
 
   static List<int> convertIds(List<dynamic> ids) {

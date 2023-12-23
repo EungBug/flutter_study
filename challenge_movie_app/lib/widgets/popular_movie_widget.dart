@@ -12,27 +12,22 @@ class PopularMovie extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
+    return Container(
       width: 250,
-      child: Column(
-        children: [
-          Container(
-            clipBehavior: Clip.hardEdge,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: Image.network(
-              '$imageUrl$poster',
-              headers: const {
-                "User-Agent":
-                    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36",
-              },
-              fit: BoxFit.cover,
-              width: 250,
-              height: 180,
-            ),
-          ),
-        ],
+      height: 180,
+      clipBehavior: Clip.hardEdge,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Image.network(
+        '$imageUrl$poster',
+        headers: const {
+          "User-Agent":
+              "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36",
+        },
+        fit: BoxFit.cover,
+        width: 250,
+        height: 180,
       ),
     );
   }

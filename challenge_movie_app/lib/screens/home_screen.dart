@@ -10,6 +10,8 @@ class HomeScreen extends StatelessWidget {
   final Future<List<MovieModel>> popularMovies = ApiService.getPopularMovies();
   final Future<List<MovieModel>> nowplayingMovies =
       ApiService.getNowPlayingMovies();
+  final Future<List<MovieModel>> comingsoonMovies =
+      ApiService.getComingSoonMovies();
 
   @override
   Widget build(BuildContext context) {
@@ -21,30 +23,30 @@ class HomeScreen extends StatelessWidget {
         title: Container(),
       ),
       body: SafeArea(
-        child: Container(
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Popular Movies',
-                    style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.w800,
-                      color: Color(0xffF2C94C),
-                    ),
+        child: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Popular Movies',
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.w800,
+                    color: Color(0xffF2C94C),
                   ),
-                  FutureBuilder(
+                ),
+                SizedBox(
+                  height: 180,
+                  child: FutureBuilder(
                     future: popularMovies,
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
-                        return SizedBox(
-                          height: 200,
-                          child: Expanded(
-                            child: makeMovieList(snapshot),
-                          ),
+                        return Expanded(
+                          child: makeMoviePosterList(snapshot),
                         );
                       }
                       return const Center(
@@ -52,26 +54,26 @@ class HomeScreen extends StatelessWidget {
                       );
                     },
                   ),
-                  const SizedBox(
-                    height: 40,
+                ),
+                const SizedBox(
+                  height: 40,
+                ),
+                const Text(
+                  'Now in Cinemas',
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.w800,
+                    color: Color(0xffF2C94C),
                   ),
-                  const Text(
-                    'Now in Cinemas',
-                    style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.w800,
-                      color: Color(0xffF2C94C),
-                    ),
-                  ),
-                  FutureBuilder(
+                ),
+                SizedBox(
+                  height: 220,
+                  child: FutureBuilder(
                     future: nowplayingMovies,
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
-                        return SizedBox(
-                          height: 300,
-                          child: Expanded(
-                            child: makeNowPlayingList(snapshot),
-                          ),
+                        return Expanded(
+                          child: makeMovieItemList(snapshot),
                         );
                       }
                       return const Center(
@@ -79,8 +81,35 @@ class HomeScreen extends StatelessWidget {
                       );
                     },
                   ),
-                ],
-              ),
+                ),
+                const SizedBox(
+                  height: 40,
+                ),
+                const Text(
+                  'Coming soon',
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.w800,
+                    color: Color(0xffF2C94C),
+                  ),
+                ),
+                SizedBox(
+                  height: 220,
+                  child: FutureBuilder(
+                    future: comingsoonMovies,
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        return Expanded(
+                          child: makeMovieItemList(snapshot),
+                        );
+                      }
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    },
+                  ),
+                ),
+              ],
             ),
           ),
         ),
@@ -88,8 +117,9 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  ListView makeMovieList(AsyncSnapshot<List<MovieModel>> snapshot) {
+  ListView makeMoviePosterList(AsyncSnapshot<List<MovieModel>> snapshot) {
     return ListView.separated(
+      shrinkWrap: true,
       padding: const EdgeInsets.symmetric(vertical: 10),
       scrollDirection: Axis.horizontal,
       itemBuilder: (context, index) {
@@ -110,8 +140,9 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
-ListView makeNowPlayingList(AsyncSnapshot<List<MovieModel>> snapshot) {
+ListView makeMovieItemList(AsyncSnapshot<List<MovieModel>> snapshot) {
   return ListView.separated(
+    shrinkWrap: true,
     padding: const EdgeInsets.symmetric(vertical: 10),
     scrollDirection: Axis.horizontal,
     itemBuilder: (context, index) {
