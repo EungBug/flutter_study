@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:challenge_movie_app/models/movie_detail_model.dart';
 import 'package:challenge_movie_app/models/movie_model.dart';
 import 'package:http/http.dart' as http;
 
@@ -41,6 +42,17 @@ class ApiService {
       return (body["results"] as List)
           .map((movie) => MovieModel.fromJson(movie))
           .toList();
+    }
+    throw Error();
+  }
+
+  static Future<MovieDetail> getMovieDetail(int id) async {
+    final url = Uri.parse('$baseUrl/movie?id=$id');
+    final res = await http.get(url);
+
+    if (res.statusCode == 200) {
+      final body = jsonDecode(res.body);
+      return MovieDetail.fromJson(body);
     }
     throw Error();
   }

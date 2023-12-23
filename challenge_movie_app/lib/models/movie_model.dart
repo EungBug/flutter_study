@@ -1,31 +1,31 @@
 class MovieModel {
   final bool adult, video;
-  final String backdrop_path,
-      original_language,
-      original_title,
+  final String backdropPath,
+      originalLanguage,
+      originalTitle,
       overview,
-      poster_path,
-      release_date,
+      posterPath,
+      releaseDate,
       title;
-  final int id, vote_count;
-  final List<int> genre_ids;
-  final double popularity, vote_average;
+  final int id, voteCount;
+  final List<int> genreIds;
+  final double popularity, voteAverage;
 
   MovieModel.fromJson(Map<String, dynamic> json)
       : adult = json['adult'],
-        backdrop_path = json['backdrop_path'],
-        genre_ids = convertIds(json['genre_ids']),
+        backdropPath = json['backdrop_path'],
+        genreIds = convertIds(json['genre_ids']),
         id = json['id'],
-        original_language = json['original_language'],
-        original_title = json['original_title'],
+        originalLanguage = json['original_language'],
+        originalTitle = json['original_title'],
         overview = json['overview'],
         popularity = json['popularity'],
-        poster_path = json['poster_path'],
-        release_date = json['release_date'],
+        posterPath = json['poster_path'],
+        releaseDate = json['release_date'],
         title = json['title'],
         video = json['video'],
-        vote_average = double.parse(json['vote_average'].toString()),
-        vote_count = json['vote_count'];
+        voteAverage = double.parse(json['vote_average'].toString()),
+        voteCount = json['vote_count'];
 
   static List<int> convertIds(List<dynamic> ids) {
     return ids.map((id) => int.parse(id.toString())).toList();

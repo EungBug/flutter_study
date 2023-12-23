@@ -126,7 +126,7 @@ class HomeScreen extends StatelessWidget {
         var movie = snapshot.data![index];
         return PopularMovie(
           id: movie.id,
-          poster: movie.backdrop_path,
+          backdropPath: movie.backdropPath,
           title: movie.title,
         );
       },
@@ -149,7 +149,7 @@ ListView makeMovieItemList(AsyncSnapshot<List<MovieModel>> snapshot) {
       var movie = snapshot.data![index];
       return NowPlayingMovie(
         id: movie.id,
-        poster: movie.backdrop_path,
+        backdropPath: movie.backdropPath,
         title: movie.title,
       );
     },
