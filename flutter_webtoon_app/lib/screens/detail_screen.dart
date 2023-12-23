@@ -3,6 +3,7 @@ import 'package:flutter_webtoon_app/models/webtoon_detail_model.dart';
 import 'package:flutter_webtoon_app/models/webtoon_episode_model.dart';
 import 'package:flutter_webtoon_app/service/api_service.dart';
 import 'package:flutter_webtoon_app/widgets/episode_widget.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class DetailScreen extends StatefulWidget {
   final String title, thumb, id;
@@ -21,12 +22,46 @@ class DetailScreen extends StatefulWidget {
 class _DetailScreenState extends State<DetailScreen> {
   late Future<WebtoonDetailModel> webtoon;
   late Future<List<WebtoonEpisodeModel>> episodes;
+  late SharedPreferences prefs;
+  bool isLiked = false;
 
   @override
   void initState() {
     super.initState();
     webtoon = ApiService.getWebtoonById(widget.id);
     episodes = ApiService.getLatestEpisodesById(widget.id);
+    initPrefs();
+  }
+
+  Future initPrefs() async {
+    prefs = await SharedPreferences.getInstance();
+    final likedToons = prefs.getStringList('likedToons');
+    if (likedToons != null) {
+      if (likedToons.contains(widget.id) == true) {
+        setState(() {
+          isLiked = true;
+        });
+      }
+    } else {
+      // 없으면 빈 배열로 새로 생성
+      prefs.setStringList('likedToons', []);
+    }
+  }
+
+  onLikeTap() async {
+    final likedToons = prefs.getStringList('likedToons');
+    if (likedToons != null) {
+      if (isLiked) {
+        likedToons.remove(widget.id);
+      } else {
+        likedToons.add(widget.id);
+      }
+      await prefs.setStringList('likedToons', likedToons);
+
+      setState(() {
+        isLiked = !isLiked;
+      });
+    }
   }
 
   @override
@@ -43,6 +78,13 @@ class _DetailScreenState extends State<DetailScreen> {
         foregroundColor: Colors.green.shade600,
         backgroundColor: Colors.white,
         elevation: 1,
+        actions: [
+          IconButton(
+              onPressed: onLikeTap,
+              icon: Icon(isLiked
+                  ? Icons.favorite_rounded
+                  : Icons.favorite_outline_rounded))
+        ],
       ),
       body: SafeArea(
         child: SingleChildScrollView(
