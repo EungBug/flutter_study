@@ -45,9 +45,7 @@ class HomeScreen extends StatelessWidget {
                     future: popularMovies,
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
-                        return Expanded(
-                          child: makeMoviePosterList(snapshot),
-                        );
+                        return makeMoviePosterList(snapshot);
                       }
                       return const Center(
                         child: CircularProgressIndicator(),
@@ -72,9 +70,7 @@ class HomeScreen extends StatelessWidget {
                     future: nowplayingMovies,
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
-                        return Expanded(
-                          child: makeMovieItemList(snapshot),
-                        );
+                        return makeMovieItemList(snapshot, 'nowplaying');
                       }
                       return const Center(
                         child: CircularProgressIndicator(),
@@ -99,9 +95,7 @@ class HomeScreen extends StatelessWidget {
                     future: comingsoonMovies,
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
-                        return Expanded(
-                          child: makeMovieItemList(snapshot),
-                        );
+                        return makeMovieItemList(snapshot, 'commingsoon');
                       }
                       return const Center(
                         child: CircularProgressIndicator(),
@@ -140,7 +134,8 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
-ListView makeMovieItemList(AsyncSnapshot<List<MovieModel>> snapshot) {
+ListView makeMovieItemList(
+    AsyncSnapshot<List<MovieModel>> snapshot, String type) {
   return ListView.separated(
     shrinkWrap: true,
     padding: const EdgeInsets.symmetric(vertical: 10),
@@ -148,10 +143,10 @@ ListView makeMovieItemList(AsyncSnapshot<List<MovieModel>> snapshot) {
     itemBuilder: (context, index) {
       var movie = snapshot.data![index];
       return NowPlayingMovie(
-        id: movie.id,
-        backdropPath: movie.backdropPath,
-        title: movie.title,
-      );
+          id: movie.id,
+          backdropPath: movie.backdropPath,
+          title: movie.title,
+          type: type);
     },
     separatorBuilder: (context, index) {
       return const SizedBox(

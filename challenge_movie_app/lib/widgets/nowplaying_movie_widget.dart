@@ -3,13 +3,15 @@ import 'package:flutter/material.dart';
 
 class NowPlayingMovie extends StatelessWidget {
   final int id;
+  final String type;
   final String title, backdropPath;
 
   const NowPlayingMovie(
       {super.key,
       required this.id,
       required this.backdropPath,
-      required this.title});
+      required this.title,
+      required this.type});
 
   static const imageUrl = 'https://image.tmdb.org/t/p/w500/';
 
@@ -21,7 +23,9 @@ class NowPlayingMovie extends StatelessWidget {
           id: id,
           backdropPath: backdropPath,
           title: title,
+          heroId: '$type$id',
         ),
+        fullscreenDialog: true,
       ),
     );
   }
@@ -37,7 +41,7 @@ class NowPlayingMovie extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Hero(
-              tag: id,
+              tag: '$type$id',
               child: Container(
                 clipBehavior: Clip.hardEdge,
                 decoration: BoxDecoration(

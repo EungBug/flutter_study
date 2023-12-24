@@ -22,7 +22,9 @@ class PopularMovie extends StatelessWidget {
           id: id,
           backdropPath: backdropPath,
           title: title,
+          heroId: 'popular$id',
         ),
+        fullscreenDialog: true,
       ),
     );
   }
@@ -32,7 +34,7 @@ class PopularMovie extends StatelessWidget {
     return GestureDetector(
       onTap: () => moveToDetail(context),
       child: Hero(
-        tag: id,
+        tag: 'popular$id',
         child: Container(
           width: 250,
           height: 180,
